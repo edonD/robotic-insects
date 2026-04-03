@@ -50,11 +50,11 @@ def main():
         result = run_evaluator(mod)
         results[mod] = result
         if result is True:
-            print("✓ PASS")
+            print("OK: PASS")
         elif result is False:
-            print("✗ FAIL")
+            print("XX: FAIL")
         else:
-            print("? UNKNOWN (run sim.py first)")
+            print("??: UNKNOWN (run sim.py first)")
 
     # Check Wave 1 before proceeding
     wave1_pass = all(results[m] is True for m in wave1_modules if results[m] is not None)
@@ -78,47 +78,48 @@ def main():
         result = run_evaluator(mod)
         results[mod] = result
         if result is True:
-            print("✓ PASS")
+            print("OK: PASS")
         elif result is False:
-            print("✗ FAIL")
+            print("XX: FAIL")
         else:
-            print("? UNKNOWN (run sim.py first)")
+            print("??: UNKNOWN (run sim.py first)")
 
     # WAVE 3
     print("\n\nWAVE 3: Integration (after Wave 2)")
     print("-" * 70)
     wave3_modules = [
         "06_flight_dynamics",
-        "07_swarm_coordination"
+        "07_swarm_coordination",
+        "10_3d_visualization"
     ]
     for mod in wave3_modules:
         print(f"\nRunning {mod}/evaluator.py...", end=" ")
         result = run_evaluator(mod)
         results[mod] = result
         if result is True:
-            print("✓ PASS")
+            print("OK: PASS")
         elif result is False:
-            print("✗ FAIL")
+            print("XX: FAIL")
         else:
-            print("? UNKNOWN (run sim.py first)")
+            print("??: UNKNOWN (run sim.py first)")
 
     # WAVE 4
     print("\n\nWAVE 4: Manufacturing & Validation (after Wave 3)")
     print("-" * 70)
     wave4_modules = [
         "08_fabrication_plan",
-        "09_fullchain"
+        "09_fullchain_integration"
     ]
     for mod in wave4_modules:
         print(f"\nRunning {mod}/evaluator.py...", end=" ")
         result = run_evaluator(mod)
         results[mod] = result
         if result is True:
-            print("✓ PASS")
+            print("OK: PASS")
         elif result is False:
-            print("✗ FAIL")
+            print("XX: FAIL")
         else:
-            print("? UNKNOWN (run sim.py first)")
+            print("??: UNKNOWN (run sim.py first)")
 
     # SUMMARY
     print("\n" + "=" * 70)
@@ -135,15 +136,15 @@ def main():
     print()
 
     if failed > 0:
-        print("✗ PROJECT STATUS: NOT READY")
+        print("XX: PROJECT STATUS: NOT READY")
         print("  Fix failing modules and re-run")
         return False
     elif unknown > 0:
-        print("? PROJECT STATUS: INCOMPLETE")
+        print("??: PROJECT STATUS: INCOMPLETE")
         print("  Run sim.py in all modules first")
         return None
     else:
-        print("✓✓✓ PROJECT STATUS: GO ✓✓✓")
+        print("OK: PROJECT STATUS: GO")
         print()
         print("All specifications met! Proceed to Phase 2:")
         print("  → design/spec_sheet.md")
