@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Simulation outputs
+*.gds
+*.gds.gz
+*.png
+*.pdf
+*.csv
+*.dat
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# FEM/CFD outputs
+*.res
+*.msh
+*.h5
+*.xdmf
