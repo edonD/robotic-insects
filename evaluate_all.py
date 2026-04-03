@@ -147,11 +147,11 @@ def main():
         print("OK: PROJECT STATUS: GO")
         print()
         print("All specifications met! Proceed to Phase 2:")
-        print("  → design/spec_sheet.md")
-        print("  → design/fabrication_traveler.md")
-        print("  → design/mems_layout/ (generate GDS-II)")
-        print("  → design/bom.md")
-        print("  → design/test_protocol.md")
+        print("  - design/spec_sheet.md")
+        print("  - design/fabrication_traveler.md")
+        print("  - design/mems_layout/ (generate GDS-II)")
+        print("  - design/bom.md")
+        print("  - design/test_protocol.md")
         return True
 
 if __name__ == '__main__':
