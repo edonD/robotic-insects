@@ -669,15 +669,15 @@ def main():
     for filename, gen_func in modules:
         html = gen_func()
         if html:
-            with open(report_dir / filename, 'w') as f:
+            with open(report_dir / filename, 'w', encoding='utf-8') as f:
                 f.write(html)
-            print(f"✓ {filename}")
+            print(f"OK: {filename}")
 
     # Generate summary report
     summary_html = generate_summary_report()
-    with open(report_dir / 'summary_report.html', 'w') as f:
+    with open(report_dir / 'summary_report.html', 'w', encoding='utf-8') as f:
         f.write(summary_html)
-    print(f"✓ summary_report.html")
+    print(f"OK: summary_report.html")
 
     print()
     print("All reports generated successfully!")
