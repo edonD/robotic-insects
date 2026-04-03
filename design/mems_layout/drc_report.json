@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-04-03",
+  "status": "PASS",
+  "total_rules": 14,
+  "passed_rules": 14,
+  "failed_rules": 0,
+  "waived_rules": 0,
+  "actuator_array_checks": [
+    {
+      "rule": "Min feature width (PZT film layer 10)",
+      "expected": ">= 3 um",
+      "actual": "film: 10000 x 5000 um",
+      "status": "PASS"
+    },
+    {
+      "rule": "Electrode inset from body edge (layer 20)",
+      "expected": ">= 1000 um",
+      "actual": "1000 um",
+      "status": "PASS"
+    },
+    {
+      "rule": "Bond pad minimum size (layer 20)",
+      "expected": ">= 150 um x 150 um",
+      "actual": "200 x 200 um",
+      "status": "PASS"
+    },
+    {
+      "rule": "Bond pad pitch (center-to-center spacing)",
+      "expected": ">= 300 um",
+      "actual": "300 um",
+      "status": "PASS"
+    },
+    {
+      "rule": "Etch release slot minimum width (layer 30)",
+      "expected": ">= 3 um",
+      "actual": "100 um",
+      "status": "PASS"
+    }
+  ],
+  "body_profile_checks": [
+    {
+      "rule": "Body outline feature size (layer 1)",
+      "expected": ">= 3 um",
+      "actual": "4000 x 1500 um",
+      "status": "PASS"
+    },
+    {
+      "rule": "DRIE cavity dimensions (layer 2)",
+      "expected": ">= 3 um",
+      "actual": "3000 x 1000 um (400 um depth)",
+      "status": "PASS"
+    },
+    {
+      "rule": "DRIE cavity aspect ratio (depth / min width)",
+      "expected": "<= 20:1",
+      "actual": "4.0:1",
+      "status": "PASS"
+    },
+    {
+      "rule": "Wing hinge flexure dimensions (layer 3)",
+      "expected": ">= 3 um",
+      "actual": "100 x 500 um",
+      "status": "PASS"
+    },
+    {
+      "rule": "Mounting hole minimum diameter (layer 4)",
+      "expected": ">= 150 um",
+      "actual": "300 um",
+      "status": "PASS"
+    },
+    {
+      "rule": "Dicing street keepout width (layer 5)",
+      "expected": ">= 100 um",
+      "actual": "100 um",
+      "status": "PASS"
+    }
+  ],
+  "reticle_check": {
+    "check": "Reticle field bounds",
+    "limits": {
+      "max_width": 30000,
+      "max_height": 20000
+    },
+    "layouts": {
+      "actuator_array": {
+        "width": 22000,
+        "height": 5000,
+        "status": "PASS"
+      },
+      "body_profile": {
+        "width": 4200,
+        "height": 1700,
+        "status": "PASS"
+      }
+    },
+    "combined": {
+      "width": 22000,
+      "height": 6700,
+      "status": "PASS"
+    }
+  },
+  "notes": "All design rules passing. Ready for mask ordering."
+}
