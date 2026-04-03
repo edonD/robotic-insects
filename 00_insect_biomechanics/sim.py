@@ -18,6 +18,11 @@ Usage:
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from util import save_results_json
 
 # ============================================================================
 # USER INPUTS — Edit these based on your target insect
@@ -270,7 +275,7 @@ def main():
 
     plt.tight_layout()
     plt.savefig('00_insect_biomechanics/biomechanics.png', dpi=150)
-    print(f"   ✓ Plot saved: 00_insect_biomechanics/biomechanics.png")
+    print(f"   OK: Plot saved: 00_insect_biomechanics/biomechanics.png")
     print()
 
     # ---- SAVE RESULTS ----
@@ -289,8 +294,25 @@ def main():
         f.write(f"- **Moment of inertia (Ixx)**: {Ixx:.2e} kg·m²\n\n")
         f.write(f"## Evaluation Status\n\n")
         f.write(f"Awaiting evaluator.py...\n")
-    print(f"   ✓ Results saved: 00_insect_biomechanics/results.md")
+    print(f"   OK: Results saved: 00_insect_biomechanics/results.md")
     print()
+
+    # Save JSON results
+    results = {
+        'insect': INSECT,
+        'body_mass_mg': float(BODY_MASS_MG),
+        'wing_span_mm': float(WING_SPAN_MM),
+        'wing_area_mm2': float(WING_AREA_MM2),
+        'wing_beat_frequency_hz': float(insect.freq_hz),
+        'stroke_amplitude_deg': float(np.max(np.abs(stroke_left))),
+        'peak_muscle_force_mN': float(max_force),
+        'control_bandwidth_hz': float(bw),
+        'cog_x_mm': float(cog[0]),
+        'cog_y_mm': float(cog[1]),
+        'cog_z_mm': float(cog[2]),
+        'moment_of_inertia_kg_m2': float(Ixx),
+    }
+    save_results_json('00_insect_biomechanics', results)
 
     print("=" * 70)
     print("DONE. Run evaluator.py to grade results against benchmarks.")

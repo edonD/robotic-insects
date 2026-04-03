@@ -16,6 +16,11 @@ Also incorporates:
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import trapz
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from util import save_results_json
 
 # ============================================================================
 # PARAMETERS (from Module 00 biomechanics + literature)
@@ -49,17 +54,6 @@ STROKE_AMP_RAD = np.deg2rad(STROKE_AMP_DEG)
 # Wing tip speed
 TIP_SPEED_M_S = 2 * np.pi * (WING_SPAN_MM * 1e-3 / 2) * BEAT_FREQ_HZ
 REYNOLDS_NUM = (TIP_SPEED_M_S * WING_CHORD_MM * 1e-3) / KINEMATIC_VISCOSITY_M2_S
-
-print(f"Flight Regime Analysis")
-print(f"=" * 70)
-print(f"Wing span: {WING_SPAN_MM} mm")
-print(f"Chord: {WING_CHORD_MM} mm")
-print(f"Wing beat frequency: {BEAT_FREQ_HZ} Hz")
-print(f"Tip speed: {TIP_SPEED_M_S:.2f} m/s")
-print(f"Reynolds number: {REYNOLDS_NUM:.1f}")
-print(f"  → Unsteady aerodynamics regime (Re < 1000)")
-print(f"  → Leading-edge vortex (LEV) is dominant lift mechanism")
-print()
 
 # ============================================================================
 # QUASI-STATIC FLAPPING AERODYNAMIC MODEL
@@ -217,6 +211,18 @@ def main():
     print("=" * 70)
     print()
 
+    # Flight regime analysis
+    print("Flight Regime Analysis")
+    print("=" * 70)
+    print(f"Wing span: {WING_SPAN_MM} mm")
+    print(f"Chord: {WING_CHORD_MM} mm")
+    print(f"Wing beat frequency: {BEAT_FREQ_HZ} Hz")
+    print(f"Tip speed: {TIP_SPEED_M_S:.2f} m/s")
+    print(f"Reynolds number: {REYNOLDS_NUM:.1f}")
+    print(f"  - Unsteady aerodynamics regime (Re < 1000)")
+    print(f"  - Leading-edge vortex (LEV) is dominant lift mechanism")
+    print()
+
     # Create aero model
     aero = FlappingWingAero(WING_SPAN_MM, WING_CHORD_MM, REYNOLDS_NUM)
 
@@ -284,7 +290,7 @@ def main():
 
     plt.tight_layout()
     plt.savefig('02_wing_aerodynamics/thrust_vs_frequency.png', dpi=150, bbox_inches='tight')
-    print(f"   ✓ Saved: 02_wing_aerodynamics/thrust_vs_frequency.png")
+    print(f"   OK: Saved: 02_wing_aerodynamics/thrust_vs_frequency.png")
     print()
 
     # Save results
@@ -312,8 +318,27 @@ def main():
         f.write(f"## Evaluation Status\n\n")
         f.write(f"Awaiting evaluator.py...\n")
 
-    print(f"   ✓ Saved: 02_wing_aerodynamics/results.md")
+    print(f"   OK: Saved: 02_wing_aerodynamics/results.md")
     print()
+
+    # Save JSON results
+    results = {
+        'reynolds_number': float(REYNOLDS_NUM),
+        'wing_span_mm': float(WING_SPAN_MM),
+        'wing_chord_mm': float(WING_CHORD_MM),
+        'wing_area_mm2': float(WING_AREA_MM2),
+        'body_mass_mg': float(BODY_MASS_MG),
+        'body_weight_mN': float(WEIGHT_MN),
+        'beat_frequency_hz': float(BEAT_FREQ_HZ),
+        'stroke_amplitude_deg': float(STROKE_AMP_DEG),
+        'thrust_at_design_mN': float(thrust_design_mn),
+        'peak_lift_mN': float(lift_peak_n * 1e3),
+        'power_at_design_mW': float(power_design_w * 1e3),
+        'thrust_to_weight_ratio': float(thrust_design_mn / WEIGHT_MN),
+        'optimal_frequency_hz': float(optimal_freq),
+        'optimal_thrust_mN': float(optimal_thrust),
+    }
+    save_results_json('02_wing_aerodynamics', results)
 
     print("=" * 70)
     print("DONE. Run evaluator.py to grade against benchmark specs.")

@@ -15,6 +15,11 @@ Reference: Beard & McLain (2012). Small Unmanned Aircraft: Theory and Practice.
 import numpy as np
 import matplotlib.pyplot as plt
 import control as ct
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from util import save_results_json
 
 # ============================================================================
 # FLIGHT DYNAMICS PARAMETERS
@@ -32,14 +37,6 @@ WING_MOMENT_ARM_M = BODY_LENGTH_M / 4  # ~1 mm moment arm for roll/pitch control
 # Control loop parameters
 CTRL_UPDATE_FREQ_HZ = 100  # update rate (100 Hz = 10 ms loop)
 CTRL_SAMPLE_TIME_S = 1.0 / CTRL_UPDATE_FREQ_HZ
-
-print("Flight Dynamics Parameters")
-print("=" * 70)
-print(f"Body mass: {BODY_MASS_KG*1e6:.1f} mg")
-print(f"Moment of inertia: {MOMENT_OF_INERTIA_KG_M2:.2e} kg·m²")
-print(f"Available torque (per wing): {THRUST_PER_WING_N * WING_MOMENT_ARM_M * 1e6:.2f} µN·m")
-print(f"Control update rate: {CTRL_UPDATE_FREQ_HZ} Hz")
-print()
 
 
 # ============================================================================
@@ -95,6 +92,15 @@ def main():
     print("=" * 70)
     print()
 
+    # Flight dynamics parameters
+    print("Flight Dynamics Parameters")
+    print("=" * 70)
+    print(f"Body mass: {BODY_MASS_KG*1e6:.1f} mg")
+    print(f"Moment of inertia: {MOMENT_OF_INERTIA_KG_M2:.2e} kg·m²")
+    print(f"Available torque (per wing): {THRUST_PER_WING_N * WING_MOMENT_ARM_M * 1e6:.2f} µN·m")
+    print(f"Control update rate: {CTRL_UPDATE_FREQ_HZ} Hz")
+    print()
+
     # Create controller
     print("1. DESIGNING PITCH CONTROLLER")
     print("-" * 70)
@@ -119,7 +125,7 @@ def main():
     # Evaluate margins
     gain_margin_ok = gain_margin_db > 6  # dB threshold
     phase_margin_ok = pm > 30  # degrees threshold
-    status = "✓ PASS" if (gain_margin_ok and phase_margin_ok) else "✗ FAIL"
+    status = "PASS" if (gain_margin_ok and phase_margin_ok) else "FAIL"
     print(f"\nMargin check: {status}")
     print()
 
@@ -188,29 +194,48 @@ def main():
 
     plt.tight_layout()
     plt.savefig('06_flight_dynamics/bode_and_step.png', dpi=150, bbox_inches='tight')
-    print(f"   ✓ Saved: 06_flight_dynamics/bode_and_step.png")
+    print(f"   OK: Saved: 06_flight_dynamics/bode_and_step.png")
     print()
 
     # Save results
     print("5. WRITING RESULTS...")
-    with open('06_flight_dynamics/results.md', 'w') as f:
+    with open('06_flight_dynamics/results.md', 'w', encoding='utf-8') as f:
         f.write("# Flight Dynamics & Control — Results\n\n")
         f.write("**Controller Type**: PID (Proportional-Integral-Derivative)\n")
         f.write("**Plant**: Linearized pitch dynamics (θ̈ = τ/I)\n\n")
         f.write("## Stability Margins\n\n")
-        f.write(f"- **Gain margin**: {gain_margin_db:.2f} dB (target: >6 dB) — {'✓' if gain_margin_ok else '✗'}\n")
-        f.write(f"- **Phase margin**: {pm:.2f}° (target: >30°) — {'✓' if phase_margin_ok else '✗'}\n")
+        f.write(f"- **Gain margin**: {gain_margin_db:.2f} dB (target: >6 dB) — {'PASS' if gain_margin_ok else 'FAIL'}\n")
+        f.write(f"- **Phase margin**: {pm:.2f} degrees (target: >30 degrees) — {'PASS' if phase_margin_ok else 'FAIL'}\n")
         f.write(f"- **Gain crossover**: {wgc/(2*np.pi):.2f} Hz\n")
         f.write(f"- **Phase crossover**: {wpc/(2*np.pi):.2f} Hz\n\n")
         f.write("## Transient Response\n\n")
-        f.write(f"- **Settling time**: {settling_time:.3f} s (target: <1.0 s) — {'✓' if settling_time < 1.0 else '✗'}\n")
+        f.write(f"- **Settling time**: {settling_time:.3f} s (target: <1.0 s) — {'PASS' if settling_time < 1.0 else 'FAIL'}\n")
         f.write(f"- **Overshoot**: {overshoot:.2f}%\n")
         f.write(f"- **Control bandwidth**: ~{wpc/(2*np.pi):.1f} Hz\n\n")
         f.write("## Evaluation Status\n\n")
         f.write(f"Overall: {status}\n")
 
-    print(f"   ✓ Saved: 06_flight_dynamics/results.md")
+    print(f"   OK: Saved: 06_flight_dynamics/results.md")
     print()
+
+    # Save JSON results
+    results = {
+        'body_mass_kg': float(BODY_MASS_KG),
+        'moment_of_inertia_kg_m2': float(MOMENT_OF_INERTIA_KG_M2),
+        'thrust_per_wing_n': float(THRUST_PER_WING_N),
+        'wing_moment_arm_m': float(WING_MOMENT_ARM_M),
+        'control_update_freq_hz': float(CTRL_UPDATE_FREQ_HZ),
+        'gain_margin_db': float(gain_margin_db),
+        'phase_margin_deg': float(pm),
+        'gain_crossover_freq_hz': float(wgc / (2 * np.pi)),
+        'phase_crossover_freq_hz': float(wpc / (2 * np.pi)),
+        'gain_margin_ok': bool(gain_margin_ok),
+        'phase_margin_ok': bool(phase_margin_ok),
+        'settling_time_s': float(settling_time),
+        'overshoot_percent': float(overshoot),
+        'rise_time_s': float(t[np.argmin(np.abs(y - 0.9))]),
+    }
+    save_results_json('06_flight_dynamics', results)
 
     print("=" * 70)
     print("DONE. Bode plot shows stability margins. Run evaluator.py to grade.")
