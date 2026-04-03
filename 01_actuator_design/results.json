@@ -1,0 +1,13 @@
+{
+  "selected_material": "PZT-5H",
+  "blocked_force_mn": 6.720000000000001,
+  "free_displacement_um": 157499999.99999997,
+  "resonance_freq_hz": 127528.51683623387,
+  "capacitance_nf": 0.12249999999999998,
+  "power_consumption_mw": 0.0049,
+  "mass_mg": 616.0,
+  "nominal_voltage": 20,
+  "pairs_needed": 2,
+  "total_pair_mass_mg": 1232.0,
+  "total_pair_power_mw": 0.0098
+}

@@ -258,39 +258,9 @@ def main():
     print("RECOMMENDATION")
     print("=" * 70)
     print()
-    print("For 200 Hz wing beat at 8 mg robot mass:")
-    print()
 
-    # Check requirements from Module 00/02
-    # Module 00: peak muscle force ~0.5–1.0 mN needed
-    # Module 02: thrust target 10–15 mN (for ~15 mg total)
-    # Per wing: ~5–7.5 mN thrust
-    # Actuators need: blocked force > 5 mN with good frequency response
-
-    pzt5h = PiezoActuator('PZT-5H', BIMORPH_LENGTH, BIMORPH_WIDTH, BIMORPH_THICKNESS)
-    pzt4 = PiezoActuator('PZT-4', BIMORPH_LENGTH, BIMORPH_WIDTH, BIMORPH_THICKNESS)
-    pvdf = PiezoActuator('PVDF', BIMORPH_LENGTH, BIMORPH_WIDTH, BIMORPH_THICKNESS)
-
-    pzt5h_summary = pzt5h.summary()
-    pzt4_summary = pzt4.summary()
-    pvdf_summary = pvdf.summary()
-
-    print(f"✓ PZT-5H: {pzt5h_summary['blocked_force_mn']:.3f} mN @ {VOLTAGE_NOMINAL}V")
-    print(f"           {pzt5h_summary['resonance_freq_hz']:.0f} Hz resonance (> 2× wing freq ✓)")
-    print(f"           {pzt5h_summary['power_consumption_mw']:.2f} mW @ 200 Hz")
-    print(f"           → RECOMMENDED for wing actuation")
-    print()
-
-    print(f"○ PZT-4: {pzt4_summary['blocked_force_mn']:.3f} mN (lower force)")
-    print(f"          → Lower power, less authority")
-    print()
-
-    print(f"○ PVDF: {pvdf_summary['blocked_force_mn']:.3f} mN (insufficient force)")
-    print(f"        → Too compliant, inefficient at 200 Hz")
-    print()
-
-    # Select PZT-5H as primary choice
-    selected = pzt5h_summary
+    # Select PZT-5H as primary choice (first in results_list)
+    selected = [r for r in results_list if r['material'] == 'PZT-5H'][0]
 
     # ---- PLOTS ----
     print("GENERATING PLOTS...")
@@ -357,7 +327,7 @@ def main():
 
     plt.tight_layout()
     plt.savefig('01_actuator_design/actuator_comparison.png', dpi=150, bbox_inches='tight')
-    print(f"✓ Saved: 01_actuator_design/actuator_comparison.png")
+    print("OK: Saved 01_actuator_design/actuator_comparison.png")
     print()
 
     # ---- SAVE RESULTS ----
@@ -397,8 +367,8 @@ def main():
         f.write("## Evaluation Status\n\n")
         f.write("Awaiting evaluator.py...\n")
 
-    print(f"✓ Saved: 01_actuator_design/results.md")
-    print(f"✓ Saved: 01_actuator_design/results.json")
+    print("OK: Saved 01_actuator_design/results.md")
+    print("OK: Saved 01_actuator_design/results.json")
     print()
 
     print("=" * 70)
